@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,39 +17,46 @@ const Hero: React.FC = () => {
     offset: ["start start", "end end"]
   });
 
-  // Animation values
-  // Start significantly smaller to let text breathe
+  // Spring options for physical feel
+  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 };
+  const smoothProgress = useSpring(scrollYProgress, springConfig);
+
+  // Animation values based on smoothed progress
   const startWidth = isMobile ? "45%" : "18%";
   const startHeight = isMobile ? "25vh" : "30vh";
-
-  // End at ~70% of viewport instead of full screen
   const endWidth = isMobile ? "90%" : "70vw";
   const endHeight = isMobile ? "55vh" : "70vh";
 
-  const width = useTransform(scrollYProgress, [0, 0.4], [startWidth, endWidth]);
-  const height = useTransform(scrollYProgress, [0, 0.4], [startHeight, endHeight]);
+  const width = useTransform(smoothProgress, [0, 0.4], [startWidth, endWidth]);
+  const height = useTransform(smoothProgress, [0, 0.4], [startHeight, endHeight]);
+  const borderRadius = useTransform(smoothProgress, [0, 0.4], ["1rem", "1.5rem"]);
 
-  // Smooth out the border radius change
-  const borderRadius = useTransform(scrollYProgress, [0, 0.4], ["1rem", "1.5rem"]);
+  // Parallax for background layers
+  const bgY = useTransform(smoothProgress, [0, 1], [0, -200]);
+  const bgRotation = useTransform(smoothProgress, [0, 1], [0, 15]);
 
-  // Parallax for text - fades out later so it stays visible longer
-  const textScale = useTransform(scrollYProgress, [0, 0.4], [1, 0.95]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  // Parallax for text
+  const textScale = useTransform(smoothProgress, [0, 0.4], [1, 0.95]);
+  const textOpacity = useTransform(smoothProgress, [0, 0.3], [1, 0]);
+  const textY = useTransform(smoothProgress, [0, 0.3], [0, -50]);
 
   return (
     <section id="home" ref={containerRef} className="relative h-[250vh] bg-background">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
 
-        {/* Aurora Mesh Gradient Background */}
-        <div className="absolute inset-0 z-0">
+        {/* Aurora Mesh Gradient Background with Parallax */}
+        <motion.div
+          style={{ y: bgY, rotate: bgRotation }}
+          className="absolute inset-0 z-0"
+        >
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full animate-mesh-flow" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/20 blur-[120px] rounded-full animate-mesh-flow [animation-delay:-5s]" />
           <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-accent-gold/10 blur-[100px] rounded-full animate-mesh-flow [animation-delay:-10s]" />
-        </div>
+        </motion.div>
 
         {/* Background Text Layer */}
         <motion.div
-          style={{ scale: textScale, opacity: textOpacity }}
+          style={{ scale: textScale, opacity: textOpacity, y: textY }}
           className="absolute inset-0 flex flex-col justify-between py-12 md:py-16 z-0 pointer-events-none select-none"
         >
           {/* Top Text */}
@@ -90,12 +97,15 @@ const Hero: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent pointer-events-none" />
         </motion.div>
 
-        {/* Decorative elements */}
+        {/* Decorative elements with Staggered Fade */}
         <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
           style={{ opacity: textOpacity }}
           className="absolute left-12 bottom-12 hidden md:block z-0"
         >
-          <div className="flex flex-col gap-1 font-sans text-[10px] text-white/40 uppercase tracking-[0.3em] font-medium">
+          <div className="flex flex-col gap-1 font-sans text-[10px] text-white/40 uppercase tracking-[0.3em] font-medium font-display">
             <span>EST. 2024</span>
             <span>GLOBAL REACH</span>
             <span>CREATIVE HOUSE</span>
@@ -103,12 +113,27 @@ const Hero: React.FC = () => {
         </motion.div>
 
         <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 1.4 }}
           style={{ opacity: textOpacity }}
           className="absolute right-12 bottom-12 max-w-xs text-right hidden md:block z-0"
         >
           <p className="font-sans text-xs text-white/60 leading-relaxed tracking-wide">
-            <span className="font-bold text-white">Lpp Entertainment</span> es un sello discográfico y agencia creativa dedicada a construir carreras artísticas con visión, estrategia y <span className="italic font-serif text-primary text-lg">alma</span>.
+            <span className="font-bold text-white uppercase tracking-wider">Lpp Entertainment</span> es un sello discográfico que construye carreras con visión, estrategia y <span className="italic font-display text-primary text-xl">alma</span>.
           </p>
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          style={{ opacity: textOpacity }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-px h-12 bg-gradient-to-b from-primary to-transparent"
+          />
         </motion.div>
 
       </div>
