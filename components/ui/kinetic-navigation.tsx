@@ -101,26 +101,32 @@ export function KineticNavigation() {
                 if (navWrap) navWrap.setAttribute("data-nav", "open");
 
                 tl.set(navWrap, { display: "block" })
-                    .set(menu, { xPercent: 0 }, "<")
-                    .fromTo(menuButtonTexts, { yPercent: 0 }, { yPercent: -100, stagger: 0.2 })
-                    .fromTo(menuButtonIcon, { rotate: 0 }, { rotate: 315 }, "<")
+                    .set(overlay, { autoAlpha: 0 })
+                    .set(menu, { xPercent: 120 })
+                    .set(bgPanels, { xPercent: 101 })
+                    .set(menuLinks, { yPercent: 140, rotate: 10 })
 
-                    .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1 }, "<")
-                    .fromTo(bgPanels, { xPercent: 101 }, { xPercent: 0, stagger: 0.12, duration: 0.575 }, "<")
-                    .fromTo(menuLinks, { yPercent: 140, rotate: 10 }, { yPercent: 0, rotate: 0, stagger: 0.05 }, "<+=0.35");
+                    .to(overlay, { autoAlpha: 1, duration: 0.3 })
+                    .to(menu, { xPercent: 0, duration: 0.6, ease: "main" }, "<")
+                    .to(menuButtonTexts, { yPercent: -100, stagger: 0.1 }, "<")
+                    .to(menuButtonIcon, { rotate: 315 }, "<")
+                    .to(bgPanels, { xPercent: 0, stagger: 0.1, duration: 0.6, ease: "main" }, "<+=0.1")
+                    .to(menuLinks, { yPercent: 0, rotate: 0, stagger: 0.05, duration: 0.5 }, "<+=0.2");
 
                 if (fadeTargets.length) {
-                    tl.fromTo(fadeTargets, { autoAlpha: 0, yPercent: 50 }, { autoAlpha: 1, yPercent: 0, stagger: 0.04, clearProps: "all" }, "<+=0.2");
+                    tl.fromTo(fadeTargets, { autoAlpha: 0, yPercent: 30 }, { autoAlpha: 1, yPercent: 0, stagger: 0.04, clearProps: "all" }, "<+=0.3");
                 }
 
             } else {
                 // CLOSE
                 if (navWrap) navWrap.setAttribute("data-nav", "closed");
 
-                tl.to(overlay, { autoAlpha: 0 })
-                    .to(menu, { xPercent: 120 }, "<")
-                    .to(menuButtonTexts, { yPercent: 0 }, "<")
-                    .to(menuButtonIcon, { rotate: 0 }, "<")
+                tl.to(menuLinks, { yPercent: 100, rotate: -5, stagger: 0.02, duration: 0.3 })
+                    .to(bgPanels, { xPercent: 101, stagger: 0.05, duration: 0.4 }, "<")
+                    .to(menu, { xPercent: 120, duration: 0.4 }, "<")
+                    .to(overlay, { autoAlpha: 0, duration: 0.3 }, "<+=0.1")
+                    .to(menuButtonTexts, { yPercent: 0, duration: 0.3 }, "<")
+                    .to(menuButtonIcon, { rotate: 0, duration: 0.3 }, "<")
                     .set(navWrap, { display: "none" });
             }
 
@@ -239,13 +245,7 @@ export function KineticNavigation() {
                             <ul className="menu-list">
                                 <li className="menu-list-item" data-shape="1">
                                     <a href="#home" className="nav-link w-inline-block" onClick={closeMenu}>
-                                        <p className="nav-link-text">Inicio</p>
-                                        <div className="nav-link-hover-bg"></div>
-                                    </a>
-                                </li>
-                                <li className="menu-list-item" data-shape="2">
-                                    <a href="#work" className="nav-link w-inline-block" onClick={closeMenu}>
-                                        <p className="nav-link-text">Portafolio</p>
+                                        <p className="nav-link-text">Home</p>
                                         <div className="nav-link-hover-bg"></div>
                                     </a>
                                 </li>
@@ -255,15 +255,15 @@ export function KineticNavigation() {
                                         <div className="nav-link-hover-bg"></div>
                                     </a>
                                 </li>
-                                <li className="menu-list-item" data-shape="4">
-                                    <a href="#testimonials" className="nav-link w-inline-block" onClick={closeMenu}>
-                                        <p className="nav-link-text" data-menu-fade>El Sello</p>
+                                <li className="menu-list-item" data-shape="2">
+                                    <a href="#work" className="nav-link w-inline-block" onClick={closeMenu}>
+                                        <p className="nav-link-text">Portfolio</p>
                                         <div className="nav-link-hover-bg"></div>
                                     </a>
                                 </li>
                                 <li className="menu-list-item" data-shape="5">
                                     <a href="#contact" className="nav-link w-inline-block" onClick={closeMenu}>
-                                        <p className="nav-link-text">Contacto</p>
+                                        <p className="nav-link-text">Contact US</p>
                                         <div className="nav-link-hover-bg"></div>
                                     </a>
                                 </li>
