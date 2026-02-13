@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
+import { KineticNavigation } from './components/ui/kinetic-navigation';
 import Hero from './components/Hero';
 import MotivationalSection from './components/MotivationalSection';
 import Marquee from './components/Marquee';
@@ -26,7 +26,7 @@ const App: React.FC = () => {
       </AnimatePresence>
 
       <div className="antialiased selection:bg-primary selection:text-white" style={{ scrollBehavior: 'smooth' }}>
-        <Navbar />
+        <KineticNavigation />
         <Hero />
         <MotivationalSection />
         <Marquee />
