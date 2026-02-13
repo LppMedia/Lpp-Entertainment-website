@@ -25,7 +25,7 @@ const App: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <div className="antialiased selection:bg-primary selection:text-white">
+      <div className="antialiased selection:bg-primary selection:text-white" style={{ scrollBehavior: 'smooth' }}>
         <Navbar />
         <Hero />
         <MotivationalSection />

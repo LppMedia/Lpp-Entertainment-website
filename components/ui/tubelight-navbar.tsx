@@ -66,6 +66,28 @@ export function NavBar({ items, className }: NavBarProps) {
     }
   }, [items])
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string, name: string) => {
+    e.preventDefault();
+    setActiveTab(name);
+
+    if (url === "#") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      const targetId = url.replace("#", "");
+      const element = document.getElementById(targetId);
+      if (element) {
+        const offset = isMobile ? 80 : 100; // Account for navbar height
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -82,7 +104,7 @@ export function NavBar({ items, className }: NavBarProps) {
             <a
               key={item.name}
               href={item.url}
-              onClick={() => setActiveTab(item.name)}
+              onClick={(e) => handleNavClick(e, item.url, item.name)}
               className={cn(
                 "relative cursor-pointer text-xs uppercase tracking-widest font-bold px-5 py-2 rounded-full transition-all duration-300",
                 "text-white/60 hover:text-white",

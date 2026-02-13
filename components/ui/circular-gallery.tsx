@@ -53,23 +53,34 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       return () => window.removeEventListener('resize', handleResize);
     }, [radius]);
 
+
     // Effect to handle scroll-based rotation
     useEffect(() => {
+      let ticking = false;
+
       const handleScroll = () => {
-        setIsScrolling(true);
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            setIsScrolling(true);
+            if (scrollTimeoutRef.current) {
+              clearTimeout(scrollTimeoutRef.current);
+            }
+
+            const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+            // Multiply by sensitivity to make it rotate more times over the page length
+            const scrollRotation = scrollProgress * 360 * scrollSensitivity;
+            setRotation(scrollRotation);
+
+            scrollTimeoutRef.current = setTimeout(() => {
+              setIsScrolling(false);
+            }, 150);
+
+            ticking = false;
+          });
+
+          ticking = true;
         }
-
-        const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
-        // Multiply by sensitivity to make it rotate more times over the page length
-        const scrollRotation = scrollProgress * 360 * scrollSensitivity;
-        setRotation(scrollRotation);
-
-        scrollTimeoutRef.current = setTimeout(() => {
-          setIsScrolling(false);
-        }, 150);
       };
 
       window.addEventListener('scroll', handleScroll, { passive: true });
