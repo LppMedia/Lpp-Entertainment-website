@@ -315,14 +315,17 @@ const HorizontalScrollGallery: React.FC<HorizontalGalleryProps> = ({ items, onIt
   const cardGap = isMobile ? 24 : 40;
   const totalTrackWidth = items.length * (cardWidth + cardGap);
   const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
-  const maxTranslate = Math.max(0, totalTrackWidth - viewportWidth + 80);
+
+  // Calculate how much we need to translate to show all cards
+  // Add extra padding to ensure last cards are visible
+  const maxTranslate = Math.max(0, totalTrackWidth - viewportWidth + (isMobile ? 100 : 200));
   const translateX = -scrollProgress * maxTranslate;
 
   return (
     <div
       ref={sectionRef}
       className="relative"
-      style={{ height: `${Math.max(200, items.length * 35)}vh` }}
+      style={{ height: `${Math.max(300, items.length * 60)}vh` }}
     >
       {/* Sticky container */}
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
@@ -357,7 +360,7 @@ const HorizontalScrollGallery: React.FC<HorizontalGalleryProps> = ({ items, onIt
         </div>
 
         {/* Scrolling track */}
-        <div className="w-full flex items-center" style={{ paddingTop: isMobile ? '100px' : '60px' }}>
+        <div className="w-full flex items-center justify-center" style={{ paddingTop: isMobile ? '100px' : '60px' }}>
           <div
             ref={trackRef}
             className="flex items-center"
@@ -365,8 +368,8 @@ const HorizontalScrollGallery: React.FC<HorizontalGalleryProps> = ({ items, onIt
               transform: `translateX(${translateX}px)`,
               transition: 'none',
               willChange: 'transform',
-              paddingLeft: isMobile ? '24px' : '8vw',
-              paddingRight: isMobile ? '24px' : '8vw',
+              paddingLeft: isMobile ? '20vw' : '15vw',
+              paddingRight: isMobile ? '20vw' : '15vw',
               gap: `${cardGap}px`,
             }}
           >
