@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
 // Define the type for a single gallery item
@@ -266,59 +266,37 @@ const HorizontalScrollGallery: React.FC<HorizontalGalleryProps> = ({ items, onIt
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    let ticking = false;
-    let lastProgress = 0;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const rect = section.getBoundingClientRect();
-          const sectionHeight = section.offsetHeight;
-          const viewportHeight = window.innerHeight;
-
-          const scrolled = -rect.top;
-          const totalScrollable = sectionHeight - viewportHeight;
-
-          if (totalScrollable > 0) {
-            const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
-            // Only update if change is significant (reduces repaints)
-            if (Math.abs(progress - lastProgress) > 0.001) {
-              setScrollProgress(progress);
-              lastProgress = progress;
-            }
-          }
-
-          ticking = false;
-        });
-        ticking = true;
-      }
+    const update = () => {
+      setIsMobile(window.innerWidth < 768);
+      setViewportWidth(window.innerWidth);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, []);
+
+  // Use Framer Motion's useScroll — reliable in all environments including Vercel
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end end'],
+  });
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    setScrollProgress(latest);
+  });
 
   const cardWidth = isMobile ? 280 : 420;
   const cardGap = isMobile ? 24 : 40;
   const totalTrackWidth = items.length * (cardWidth + cardGap);
-  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
 
-  // Calculate how much we need to translate to show all cards
-  // Add extra padding to ensure last cards are visible
-  const maxTranslate = Math.max(0, totalTrackWidth - viewportWidth + (isMobile ? 100 : 200));
+  // Account for the track's left/right padding in the max translation
+  const paddingPx = viewportWidth * (isMobile ? 0.20 : 0.15);
+  const maxTranslate = Math.max(0, totalTrackWidth + paddingPx * 2 - viewportWidth);
   const translateX = -scrollProgress * maxTranslate;
 
   return (

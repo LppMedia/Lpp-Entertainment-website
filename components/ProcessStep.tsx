@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 interface ProcessStepProps {
     number: number;
@@ -22,24 +22,20 @@ const ProcessStep: React.FC<ProcessStepProps> = ({
     textColor = '#ffffff',
     overlay,
 }) => {
-    const sectionRef = useRef<HTMLElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ["start end", "end start"]
-    });
-
-    const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
-    const imgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1, 1.1]);
-
     return (
         <section
-            ref={sectionRef}
-            className="min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-20 py-20 overflow-hidden"
+            className="min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-20 py-20"
             style={{ backgroundColor }}
         >
             <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                 {/* Left Side: Content */}
-                <div className="space-y-6">
+                <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    viewport={{ once: true }}
+                    className="space-y-6"
+                >
                     {/* Number Badge */}
                     <div
                         className="inline-flex items-center justify-center w-12 h-12 rounded-full border-2 font-mono text-sm tracking-widest"
@@ -79,15 +75,19 @@ const ProcessStep: React.FC<ProcessStepProps> = ({
                     </ul>
 
                     {/* Learn More Link */}
-                    <div className="pt-4">
+                    <motion.div
+                        className="pt-4"
+                        whileHover={{ x: 10 }}
+                        transition={{ duration: 0.3 }}
+                    >
                         <a
                             href="#contact"
-                            className="inline-flex items-center gap-2 text-sm font-medium tracking-wider uppercase group"
+                            className="inline-flex items-center gap-2 text-sm font-medium tracking-wider uppercase"
                             style={{ color: textColor }}
                         >
                             Conoce más
                             <svg
-                                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                                className="w-4 h-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -100,19 +100,23 @@ const ProcessStep: React.FC<ProcessStepProps> = ({
                                 />
                             </svg>
                         </a>
-                    </div>
-                </div>
-
-                {/* Right Side: Poster Image with Parallax */}
-                <div className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none overflow-hidden rounded-lg shadow-2xl">
-                    <motion.div style={{ y, scale: imgScale }} className="absolute inset-0">
-                        <img
-                            src={image}
-                            alt={title}
-                            className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-transparent" />
                     </motion.div>
+                </motion.div>
+
+                {/* Right Side: Poster Image */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    viewport={{ once: true }}
+                    className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-transparent rounded-lg" />
+                    <img
+                        src={image}
+                        alt={title}
+                        className="w-full h-full object-cover rounded-lg shadow-2xl"
+                    />
 
                     {/* Dynamic Overlay */}
                     {overlay}
@@ -124,7 +128,7 @@ const ProcessStep: React.FC<ProcessStepProps> = ({
                             backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
                         }}
                     />
-                </div>
+                </motion.div>
             </div>
         </section>
     );

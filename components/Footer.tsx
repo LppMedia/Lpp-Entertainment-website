@@ -1,4 +1,28 @@
 import React from 'react';
+import { SocialLinks } from './ui/social-links';
+
+const socials = [
+  {
+    name: 'Instagram',
+    url: 'https://instagram.com',
+    image: 'https://link-hover-lndev.vercel.app/instagram.png',
+  },
+  {
+    name: 'TikTok',
+    url: 'https://tiktok.com',
+    image: 'https://link-hover-lndev.vercel.app/tiktok.png',
+  },
+  {
+    name: 'Spotify',
+    url: 'https://spotify.com',
+    image: 'https://link-hover-lndev.vercel.app/spotify.png',
+  },
+  {
+    name: 'YouTube',
+    url: 'https://youtube.com',
+    image: 'https://link-hover-lndev.vercel.app/youtube.png',
+  },
+];
 
 const Footer: React.FC = () => {
   return (
@@ -8,11 +32,7 @@ const Footer: React.FC = () => {
           LPP<span className="text-primary">.</span>
         </div>
 
-        <div className="flex gap-10 text-[10px] items-center font-bold uppercase tracking-[0.3em] text-white/40">
-          <a href="#" className="hover:text-primary transition-all">Privacidad</a>
-          <a href="#" className="hover:text-primary transition-all">LinkedIn</a>
-          <a href="#" className="hover:text-primary transition-all">Instagram</a>
-        </div>
+        <SocialLinks socials={socials} />
 
         <div className="text-[10px] font-medium uppercase tracking-widest text-white/20">
           © {new Date().getFullYear()} Lpp Entertainment.
