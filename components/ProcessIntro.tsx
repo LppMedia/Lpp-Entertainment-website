@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const ProcessIntro: React.FC = () => {
     return (
-        <section className="min-h-screen bg-white flex items-center justify-center px-6">
+        <section className="min-h-screen bg-white flex items-center justify-center px-6 -mt-1">
             <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
