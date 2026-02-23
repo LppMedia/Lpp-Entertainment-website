@@ -26,11 +26,16 @@ const CallToAction: React.FC = () => {
           <p className="text-white/60 text-sm md:text-lg max-w-xl mx-auto mb-16 font-medium uppercase tracking-[0.2em] leading-relaxed">
             Construyamos una carrera con visión, <span className="text-white font-bold italic font-serif text-2xl">alma</span> y resultados reales.
           </p>
-          <button className="group relative px-12 py-6 bg-white text-black font-display text-2xl rounded-full overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+          <a
+            href="https://api.leadconnectorhq.com/widget/form/KFiuqFDFGzBcqv1JKkWG"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative px-12 py-6 bg-white text-black font-display text-2xl rounded-full overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)] inline-block"
+          >
             <span className="relative z-10">Iniciar Proyecto</span>
             <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <span className="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center text-white">Iniciar Proyecto</span>
-          </button>
+          </a>
         </div>
       </motion.div>
     </section>
